@@ -1,9 +1,7 @@
 # discord-bot-163-netease-music
 该机器人能播放网易云音乐
 
-[![discord-bot-163-netease-meusic](https://socialify.git.ci/vinelin/discord-bot-163-netease-meusic/image?description=1&font=Inter&language=1&owner=1&pattern=Brick%20Wall&theme=Light)](https://github.com/vinelin/discord-bot-163-netease-meusic/)
-
-python3版本：3.6.12
+python3版本：3.9
 
 # 使用
 ### 1.首先安装 discord.py[voice]
