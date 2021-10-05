@@ -148,12 +148,6 @@ class MusicBox(commands.Cog):
     #     print(lyric)
     #     await ctx.send(lyric)
 
-    @commands.command()
-    async def j(self, ctx):
-        result = hitokoto.hitokoto()
-        embed = discord.Embed(title=result['hitokoto'], color=0xffb6c1) \
-            .set_footer(text=result['from'], icon_url='https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/271/clown-face_1f921.png')
-        await ctx.send(embed=embed)
 
     @commands.command()
     async def cleancache(self, ctx: commands.Context):
@@ -174,14 +168,11 @@ class MusicBox(commands.Cog):
         embed = discord.Embed(title="命令表（由于网速和服务器的问题，等待bot作出反应后在进行下一步）", description="目前可以使用命令如下：", color=0xeee657)
         embed.add_field(name=".join", value="让机器人加入语音", inline=False)
         embed.add_field(name=".quit", value="让机器人退出语音", inline=False)
-        embed.add_field(name=".caiquan", value="石头剪刀布小游戏", inline=False)
-        embed.add_field(name=".fudu", value="复读。输入“结束复读”停止", inline=False)
         embed.add_field(name=".play 关键字", value="播放网易云上的音乐", inline=False)
         embed.add_field(name=".skip", value="切换到下一首歌", inline=False)
         embed.add_field(name=".queue", value="查看等待播放的歌曲", inline=False)
         embed.add_field(name=".remove 序号", value="删除所选歌曲", inline=False)
         embed.add_field(name=".stop", value="停止播放", inline=False)
-        embed.add_field(name=".j", value="悲伤春秋时间", inline=False)
         await ctx.send(embed=embed)
 
 
@@ -192,38 +183,6 @@ async def on_ready():
     netease_dl.clean_cache()
     print('机器人已连接:{}'.format(bot.user.name))
     print('机器人ID:{}'.format(bot.user.id))
-
-
-
-@bot.command()
-async def caiquan(ctx):
-    emoji = [':fist:', ':v:', ':raised_hand:']
-    n = random.randint(1, 900) % 3
-    await ctx.send(ctx.message.author.name+"出了"+emoji[n])
-
-
-@bot.command()
-async def roll(ctx):
-    n = random.randint(1, 100)
-    await ctx.send(ctx.message.author.name+" roll:"+str(n))
-
-
-
-@bot.command()
-async def fudu(ctx):
-    channel = ctx.channel
-    def check(m):
-        return  m.channel == channel
-    try:
-        while True:
-            msg = await bot.wait_for('message', check=check, timeout=10)
-            if msg.content == '结束复读':
-                return
-            else:
-                await ctx.send(msg.content)
-    except asyncio.TimeoutError as e:
-        await ctx.send("看来没人了")
-
 
 
 if __name__ == '__main__':
