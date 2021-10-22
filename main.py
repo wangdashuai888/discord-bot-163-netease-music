@@ -102,6 +102,55 @@ class MusicBox(commands.Cog):
                 print("2：", Queue.music_list)
                 return
 
+    @commands.command()
+    #播放指定网易云音乐id
+    async def playid(self, ctx, *, music_id):
+        if ctx.voice_client is None:
+           return await ctx.send("先使用.join")
+        # print(music_kwords)
+        ids = music_id
+        if ids == None:
+            embed = discord.Embed(title="Not Found", description="请输入id", color=0xeee657)
+            return await ctx.send(embed=embed)
+        music_info = netease_dl.searchResult(ids)
+        if music_info == None:
+            embed = discord.Embed(title="播放失败", description="请输入正确的网易音乐id", color=0xeee657)
+            return await ctx.send(embed=embed)
+        #正在播放 又有新的歌曲就添加到队列
+        if ctx.voice_client.is_playing():
+            Queue.enqueue(music_info)
+            print("0：", Queue.music_list)
+            return
+        #没有播放 直接添加到队列
+        Queue.enqueue(music_info)
+        print("1：",Queue.music_list)
+
+        while True:
+            # 等待播放结束
+            while ctx.voice_client.is_playing():
+                await asyncio.sleep(1)
+            print("3：", Queue.music_list)
+            if Queue.is_empty() is False:
+                music_detail = Queue.dequeue()
+                url = music_detail["url"]
+                musicId = music_detail["musicId"]
+                musicPic = music_detail["musicPic"]
+                musicName = music_detail["musicName"]
+                musicArtists = music_detail["musicArtists"]
+                # global lyric
+                # lyric = music_info['lyric']
+                #播放
+                musicFileName = netease_dl.download_music(musicId, url)
+                source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(musicFileName), volume=0.6)
+                embed = discord.Embed(title="正在播放: " + musicArtists + " - " + musicName, color=0xDC143C) \
+                    .add_field(name="原始地址", value="[点这里](%s)" % music_info["163url"], inline=False) \
+                    .set_thumbnail(url=musicPic)
+                ctx.voice_client.play(source, after=lambda e: print('Player error: %s' % e) if e else None)
+                await ctx.send(embed=embed)
+
+            else:
+                print("2：", Queue.music_list)
+                return
 
     @commands.command()
     async def skip(self, ctx: commands.Context):
